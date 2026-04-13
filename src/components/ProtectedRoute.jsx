@@ -1,13 +1,10 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../features/authentication/AuthContext';
+import { Navigate } from "react-router-dom";
+import { isLoggedIn } from "../services/authService";
 
-export const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    // Redirect them to the /login page
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-};
+/**
+ * Wraps routes that require authentication.
+ * Redirects to /login if no session exists.
+ */
+export default function ProtectedRoute({ children }) {
+  return isLoggedIn() ? children : <Navigate to="/login" replace />;
+}

@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap');
+
+.home-root {
+  min-height: 100vh;
+  background: #f0f4f8;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.home-header {
+  background: #0d2240;
+  padding: 0 2rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px #00000030;
+}
+
+.home-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-logo-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #00d4aa;
+  letter-spacing: 2px;
+}
+
+.home-user-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.home-greeting {
+  color: #a8c8e8;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1.5px solid #00d4aa;
+  color: #00d4aa;
+  padding: 6px 18px;
+  border-radius: 7px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.logout-btn:hover {
+  background: #00d4aa;
+  color: #0d2240;
+}
+
+.home-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+}
+
+.home-welcome-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  box-shadow: 0 8px 40px #0a162818;
+  max-width: 400px;
+  width: 100%;
+}
+
+.welcome-icon { font-size: 3rem; margin-bottom: 1rem; }
+.home-welcome-card h1 { font-family: 'Syne', sans-serif; color: #0d2240; margin: 0 0 0.5rem; }
+.home-welcome-card p  { color: #6a7f96; margin: 0; }
