@@ -12,7 +12,10 @@ const api = axios.create({
  * Backend handles encryption check and returns 200 on success.
  */
 export const loginUser = async (email, password) => {
-  const response = await api.post("/api/auth/login", { email, password });
+  const response = await api.post("/api/users/login", {
+  "username": email,
+  "password": password
+});
   return response.data; // e.g. { success: true, user: { name, email } }
 };
 
