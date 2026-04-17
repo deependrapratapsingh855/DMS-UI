@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://dms-backend-n9uw.onrender.com";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -30,3 +30,6 @@ export const clearSession = () => {
   localStorage.removeItem("dms_logged_in");
   localStorage.removeItem("dms_user");
 };
+
+export const registerUser = (payload) =>
+  axios.post("/api/users/create", payload).then(r => r.data);
