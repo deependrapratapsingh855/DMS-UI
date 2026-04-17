@@ -282,3 +282,94 @@
   .reg-actions { flex-direction: column-reverse; }
   .cancel-btn  { width: 100%; text-align: center; }
 }
+
+
+
+
+
+
+
+/* //--------------------------------------------------------- */
+
+
+/* Expand the right panel so the form can scroll */
+.reg-page-panel {
+  flex: 1.4;                   /* slightly wider than login panel */
+  align-items: flex-start;     /* allow card to grow naturally */
+  overflow-y: auto;
+  padding: 2.4rem 2rem;
+}
+
+/* Card that holds the header + form */
+.reg-page-card {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px #0a162818;
+  overflow: hidden;
+  animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Header bar inside the card */
+.reg-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.8rem;
+  background: #0d2240;
+  border-radius: 16px 16px 0 0;
+}
+
+/* Override subtitle colour inside dark header */
+.reg-page-header .reg-subtitle {
+  color: #7aa5cc;
+}
+
+/* Override title colour inside dark header */
+.reg-page-header .reg-title {
+  color: #fff !important;
+}
+
+/* Back button in the header — lighter style */
+.reg-page-header .cancel-btn {
+  background: #ffffff18;
+  border-color: transparent;
+  color: #fff;
+  padding: 9px 18px;
+  font-size: 0.85rem;
+}
+.reg-page-header .cancel-btn:hover {
+  background: #ffffff28;
+  border-color: transparent;
+  color: #00d4aa;
+}
+
+/* Form inside the card (not a side drawer, so no flex:1 / overflow needed) */
+.reg-page-form {
+  padding: 1.6rem 1.8rem 2rem;
+  overflow: visible !important;
+  flex: unset !important;
+}
+
+/* Success screen inside the page card */
+.reg-page-panel .reg-success {
+  padding: 4rem 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px #0a162818;
+  max-width: 480px;
+  margin: auto;
+  animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Responsive tweaks ── */
+@media (max-width: 700px) {
+  .reg-page-panel {
+    padding: 1.2rem 1rem;
+  }
+  .reg-page-form {
+    padding: 1.2rem 1rem 1.5rem;
+  }
+}

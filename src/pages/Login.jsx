@@ -85,15 +85,17 @@ function StrengthBar({ pwd }) {
 export default function Login() {
   const navigate = useNavigate();
 
-  /* login */
+  /* view: "login" | "register" */
+  const [view, setView] = useState("login");
+
+  /* login state */
   const [loginEmail,    setLoginEmail]    = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [showLoginPwd,  setShowLoginPwd]  = useState(false);
   const [loginLoading,  setLoginLoading]  = useState(false);
   const [loginError,    setLoginError]    = useState("");
 
-  /* register panel */
-  const [showRegister, setShowRegister] = useState(false);
+  /* register state */
   const [form,         setForm]         = useState(EMPTY_FORM);
   const [showPwd,      setShowPwd]      = useState(false);
   const [showCPwd,     setShowCPwd]     = useState(false);
@@ -146,32 +148,18 @@ export default function Login() {
       await axios.post(
         `${import.meta.env.VITE_API_BASE_URL || "https://dms-backend-n9uw.onrender.com"}/api/users/create`,
         {
-          "username": form.email,
-          "password": form.password,
-          "role": "ADMIN",
-          "firstName": form.firstName,
-          "middleName": form.middleName || null,
-          "lastName": form.lastName,
-          "email": form.email,
-          "priCountryCode": form.primaryCountryCode,
-          "primaryNumber": form.primaryPhone,
-          "permAddress": form.permanentAddress,
-          "resiAddress": form.residentialAddress,
+          username:       form.email,
+          password:       form.password,
+          role:           "ADMIN",
+          firstName:      form.firstName,
+          middleName:     form.middleName || null,
+          lastName:       form.lastName,
+          email:          form.email,
+          priCountryCode: form.primaryCountryCode,
+          primaryNumber:  form.primaryPhone,
+          permAddress:    form.permanentAddress,
+          resiAddress:    form.residentialAddress,
         }
-        // {
-        //   firstName:          form.firstName,
-        //   middleName:         form.middleName || null,
-        //   lastName:           form.lastName,
-        //   email:              form.email,
-        //   password:           form.password,
-        //   dateOfBirth:        form.dob,
-        //   primaryCountryCode: form.primaryCountryCode,
-        //   primaryPhone:       form.primaryPhone,
-        //   altCountryCode:     form.altPhone ? form.altCountryCode : null,
-        //   altPhone:           form.altPhone || null,
-        //   permanentAddress:   form.permanentAddress,
-        //   residentialAddress: form.residentialAddress,
-        // }
       );
       setRegSuccess(true);
       setForm(EMPTY_FORM);
@@ -181,14 +169,29 @@ export default function Login() {
     } finally { setRegLoading(false); }
   };
 
-  const openRegister  = () => { setShowRegister(true); setRegSuccess(false); setRegError(""); setErrors({}); };
-  const closeRegister = () => { setShowRegister(false); setRegSuccess(false); setRegError(""); setErrors({}); setForm(EMPTY_FORM); setSameAddress(false); };
+  const goToRegister = () => {
+    setRegSuccess(false);
+    setRegError("");
+    setErrors({});
+    setForm(EMPTY_FORM);
+    setSameAddress(false);
+    setView("register");
+  };
+
+  const goToLogin = () => {
+    setRegSuccess(false);
+    setRegError("");
+    setErrors({});
+    setForm(EMPTY_FORM);
+    setSameAddress(false);
+    setView("login");
+  };
 
   /* ─────────────── RENDER ─────────────── */
   return (
     <div className="login-root">
 
-      {/* ── Left hero ── */}
+      {/* ── Left hero (always visible) ── */}
       <div className="login-hero">
         <div className="hero-overlay" />
         <div className="hero-network" aria-hidden="true">
@@ -231,191 +234,197 @@ export default function Login() {
         <div className="float-label fl-3">DMS</div>
       </div>
 
-      {/* ── Right login panel ── */}
-      <div className="login-panel">
-        <div className="login-card">
-          <div className="card-logo"><DmsIcon size={28}/><span className="card-logo-text">DMS</span></div>
-          <h2 className="card-title">
-            Login <span className="divider">|</span>{" "}
-            <span className="subtitle-text">Distributor Portal</span>
-          </h2>
+      {/* ── Right panel: Login ── */}
+      {view === "login" && (
+        <div className="login-panel">
+          <div className="login-card">
+            <div className="card-logo"><DmsIcon size={28}/><span className="card-logo-text">DMS</span></div>
+            <h2 className="card-title">
+              Login <span className="divider">|</span>{" "}
+              <span className="subtitle-text">Distributor Portal</span>
+            </h2>
 
-          {loginError && <div className="error-banner">{loginError}</div>}
+            {loginError && <div className="error-banner">{loginError}</div>}
 
-          <form onSubmit={handleLogin} className="login-form" noValidate>
-            <div className="field-wrap">
-              <span className="field-icon"><IconMail/></span>
-              <input type="email" placeholder="Email Address" className="field-input"
-                value={loginEmail} onChange={e => setLoginEmail(e.target.value)} autoComplete="email"/>
-            </div>
-            <div className="field-wrap">
-              <span className="field-icon"><IconLock/></span>
-              <input type={showLoginPwd ? "text" : "password"} placeholder="Password" className="field-input"
-                value={loginPassword} onChange={e => setLoginPassword(e.target.value)} autoComplete="current-password"/>
-              <button type="button" className="eye-btn" onClick={() => setShowLoginPwd(v => !v)}>
-                {showLoginPwd ? <EyeOff/> : <EyeOn/>}
-              </button>
-            </div>
-            <div className="forgot-row">
-              <a href="#" className="forgot-link">Forgot your password?</a>
-            </div>
-            <button type="submit" className="login-btn" disabled={loginLoading}>
-              {loginLoading ? <span className="spinner"/> : "Secure Login"}
-            </button>
-          </form>
-
-          <p className="register-row">
-            New to DMS?{" "}
-            <button className="register-link-btn" onClick={openRegister}>Get Started</button>
-          </p>
-        </div>
-      </div>
-
-      {/* ════════ REGISTRATION DRAWER ════════ */}
-      <div className={`reg-overlay ${showRegister ? "reg-overlay--visible" : ""}`} onClick={closeRegister}>
-        <div className={`reg-drawer ${showRegister ? "reg-drawer--open" : ""}`} onClick={e => e.stopPropagation()}>
-
-          {/* Drawer header */}
-          <div className="reg-header">
-            <div className="reg-header-left">
-              <DmsIcon size={26}/>
-              <div>
-                <h2 className="reg-title">Create Account</h2>
-                <p className="reg-subtitle">DMS Distributor Portal</p>
+            <form onSubmit={handleLogin} className="login-form" noValidate>
+              <div className="field-wrap">
+                <span className="field-icon"><IconMail/></span>
+                <input type="email" placeholder="Email Address" className="field-input"
+                  value={loginEmail} onChange={e => setLoginEmail(e.target.value)} autoComplete="email"/>
               </div>
-            </div>
-            <button className="reg-close" onClick={closeRegister} aria-label="Close">✕</button>
-          </div>
+              <div className="field-wrap">
+                <span className="field-icon"><IconLock/></span>
+                <input type={showLoginPwd ? "text" : "password"} placeholder="Password" className="field-input"
+                  value={loginPassword} onChange={e => setLoginPassword(e.target.value)} autoComplete="current-password"/>
+                <button type="button" className="eye-btn" onClick={() => setShowLoginPwd(v => !v)}>
+                  {showLoginPwd ? <EyeOff/> : <EyeOn/>}
+                </button>
+              </div>
+              <div className="forgot-row">
+                <a href="#" className="forgot-link">Forgot your password?</a>
+              </div>
+              <button type="submit" className="login-btn" disabled={loginLoading}>
+                {loginLoading ? <span className="spinner"/> : "Login"}
+              </button>
+            </form>
 
-          {/* ── Success screen ── */}
+            <p className="register-row">
+              New to DMS?{" "}
+              <button className="register-link-btn" onClick={goToRegister}>Get Started</button>
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Right panel: Register (full page, no drawer) ── */}
+      {view === "register" && (
+        <div className="login-panel reg-page-panel">
+
+          {/* Success screen */}
           {regSuccess ? (
             <div className="reg-success">
               <div className="success-icon">🎉</div>
               <h3>Registration Successful!</h3>
               <p>Your account has been created. You can now log in.</p>
-              <button className="login-btn" style={{ marginTop: "1.8rem", maxWidth: 220 }} onClick={closeRegister}>
+              <button className="login-btn" style={{ marginTop: "1.8rem", maxWidth: 220 }} onClick={goToLogin}>
                 Back to Login
               </button>
             </div>
           ) : (
+            <div className="reg-page-card">
 
-          /* ── Registration form ── */
-          <form onSubmit={handleRegister} className="reg-form" noValidate>
-            {regError && <div className="error-banner">{regError}</div>}
+              {/* Page header */}
+              <div className="reg-page-header">
+                <div className="reg-header-left">
+                  <DmsIcon size={26}/>
+                  <div>
+                    <h2 className="reg-title" style={{ color: "#0d2240" }}>Create Account</h2>
+                    <p className="reg-subtitle" style={{ color: "#6a7f96" }}>DMS Distributor Portal</p>
+                  </div>
+                </div>
+                <button className="cancel-btn" onClick={goToLogin} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  ← Back to Login
+                </button>
+              </div>
 
-            {/* Personal Info */}
-            <SectionLabel icon="👤" text="Personal Information" />
-            <div className="reg-row three-col">
-              <RegField label="First Name *" error={errors.firstName}>
-                <input className={`finput ${errors.firstName ? "finput--err" : ""}`}
-                  placeholder="First Name" value={form.firstName} onChange={handleChange("firstName")}/>
-              </RegField>
-              <RegField label="Middle Name" error="">
-                <input className="finput" placeholder="Optional"
-                  value={form.middleName} onChange={handleChange("middleName")}/>
-              </RegField>
-              <RegField label="Last Name *" error={errors.lastName}>
-                <input className={`finput ${errors.lastName ? "finput--err" : ""}`}
-                  placeholder="Last Name" value={form.lastName} onChange={handleChange("lastName")}/>
-              </RegField>
-            </div>
+              {/* Registration form */}
+              <form onSubmit={handleRegister} className="reg-form reg-page-form" noValidate>
+                {regError && <div className="error-banner">{regError}</div>}
 
-            <div className="reg-row two-col">
-              <RegField label="Date of Birth *" error={errors.dob}>
-                <input type="date" className={`finput ${errors.dob ? "finput--err" : ""}`}
-                  value={form.dob} onChange={handleChange("dob")}
-                  max={new Date().toISOString().split("T")[0]}/>
-              </RegField>
-              <RegField label="Email Address *" error={errors.email}>
-                <input type="email" className={`finput ${errors.email ? "finput--err" : ""}`}
-                  placeholder="you@example.com" value={form.email} onChange={handleChange("email")}/>
-              </RegField>
-            </div>
+                {/* Personal Info */}
+                <SectionLabel icon="👤" text="Personal Information" />
+                <div className="reg-row three-col">
+                  <RegField label="First Name *" error={errors.firstName}>
+                    <input className={`finput ${errors.firstName ? "finput--err" : ""}`}
+                      placeholder="First Name" value={form.firstName} onChange={handleChange("firstName")}/>
+                  </RegField>
+                  <RegField label="Middle Name" error="">
+                    <input className="finput" placeholder="Optional"
+                      value={form.middleName} onChange={handleChange("middleName")}/>
+                  </RegField>
+                  <RegField label="Last Name *" error={errors.lastName}>
+                    <input className={`finput ${errors.lastName ? "finput--err" : ""}`}
+                      placeholder="Last Name" value={form.lastName} onChange={handleChange("lastName")}/>
+                  </RegField>
+                </div>
 
-            {/* Security */}
-            <SectionLabel icon="🔐" text="Security" />
-            <div className="reg-row two-col">
-              <RegField label="Password *" error={errors.password}>
-                <div className={`field-wrap compact ${errors.password ? "field-err" : ""}`}>
-                  <input type={showPwd ? "text" : "password"} className="field-input"
-                    placeholder="Create password" value={form.password} onChange={handleChange("password")}/>
-                  <button type="button" className="eye-btn" onClick={() => setShowPwd(v => !v)}>
-                    {showPwd ? <EyeOff/> : <EyeOn/>}
+                <div className="reg-row two-col">
+                  <RegField label="Date of Birth *" error={errors.dob}>
+                    <input type="date" className={`finput ${errors.dob ? "finput--err" : ""}`}
+                      value={form.dob} onChange={handleChange("dob")}
+                      max={new Date().toISOString().split("T")[0]}/>
+                  </RegField>
+                  <RegField label="Email Address *" error={errors.email}>
+                    <input type="email" className={`finput ${errors.email ? "finput--err" : ""}`}
+                      placeholder="you@example.com" value={form.email} onChange={handleChange("email")}/>
+                  </RegField>
+                </div>
+
+                {/* Security */}
+                <SectionLabel icon="🔐" text="Security" />
+                <div className="reg-row two-col">
+                  <RegField label="Password *" error={errors.password}>
+                    <div className={`field-wrap compact ${errors.password ? "field-err" : ""}`}>
+                      <input type={showPwd ? "text" : "password"} className="field-input"
+                        placeholder="Create password" value={form.password} onChange={handleChange("password")}/>
+                      <button type="button" className="eye-btn" onClick={() => setShowPwd(v => !v)}>
+                        {showPwd ? <EyeOff/> : <EyeOn/>}
+                      </button>
+                    </div>
+                    <StrengthBar pwd={form.password}/>
+                  </RegField>
+                  <RegField label="Confirm Password *" error={errors.confirmPassword}>
+                    <div className={`field-wrap compact ${errors.confirmPassword ? "field-err" : ""}`}>
+                      <input type={showCPwd ? "text" : "password"} className="field-input"
+                        placeholder="Repeat password" value={form.confirmPassword} onChange={handleChange("confirmPassword")}/>
+                      <button type="button" className="eye-btn" onClick={() => setShowCPwd(v => !v)}>
+                        {showCPwd ? <EyeOff/> : <EyeOn/>}
+                      </button>
+                    </div>
+                    {form.confirmPassword && !errors.confirmPassword && form.password === form.confirmPassword && (
+                      <p className="match-ok">✓ Passwords match</p>
+                    )}
+                  </RegField>
+                </div>
+                <p className="pwd-hint">Must be 8–16 characters and include uppercase, lowercase, number &amp; special character</p>
+
+                {/* Contact */}
+                <SectionLabel icon="📱" text="Contact Information" />
+                <div className="reg-row two-col">
+                  <RegField label="Primary Phone *" error={errors.primaryPhone}>
+                    <div className={`field-wrap compact phone-wrap ${errors.primaryPhone ? "field-err" : ""}`}>
+                      <select className="country-select" value={form.primaryCountryCode} onChange={handleChange("primaryCountryCode")}>
+                        {COUNTRY_CODES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
+                      </select>
+                      <div className="phone-divider"/>
+                      <input className="field-input" placeholder="Phone number"
+                        value={form.primaryPhone} onChange={handleChange("primaryPhone")} maxLength={15}/>
+                    </div>
+                  </RegField>
+                  <RegField label="Alternate Phone (Optional)" error={errors.altPhone}>
+                    <div className={`field-wrap compact phone-wrap ${errors.altPhone ? "field-err" : ""}`}>
+                      <select className="country-select" value={form.altCountryCode} onChange={handleChange("altCountryCode")}>
+                        {COUNTRY_CODES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
+                      </select>
+                      <div className="phone-divider"/>
+                      <input className="field-input" placeholder="Optional"
+                        value={form.altPhone} onChange={handleChange("altPhone")} maxLength={15}/>
+                    </div>
+                  </RegField>
+                </div>
+
+                {/* Address */}
+                <SectionLabel icon="📍" text="Address Details" />
+                <RegField label="Permanent Address *" error={errors.permanentAddress}>
+                  <textarea className={`finput textarea-field ${errors.permanentAddress ? "finput--err" : ""}`}
+                    placeholder="House No., Street, City, State, PIN Code"
+                    rows={2} value={form.permanentAddress} onChange={handleChange("permanentAddress")}/>
+                </RegField>
+
+                <label className="same-addr-label">
+                  <input type="checkbox" checked={sameAddress} onChange={handleSameAddress}/>
+                  <span>Residential address same as permanent address</span>
+                </label>
+
+                <RegField label="Residential Address *" error={errors.residentialAddress}>
+                  <textarea className={`finput textarea-field ${errors.residentialAddress ? "finput--err" : ""} ${sameAddress ? "finput--disabled" : ""}`}
+                    placeholder="House No., Street, City, State, PIN Code"
+                    rows={2} value={form.residentialAddress} onChange={handleChange("residentialAddress")}
+                    disabled={sameAddress}/>
+                </RegField>
+
+                {/* Actions */}
+                <div className="reg-actions">
+                  <button type="button" className="cancel-btn" onClick={goToLogin}>Cancel</button>
+                  <button type="submit" className="login-btn" disabled={regLoading} style={{ minWidth: 160 }}>
+                    {regLoading ? <span className="spinner"/> : "Create Account"}
                   </button>
                 </div>
-                <StrengthBar pwd={form.password}/>
-              </RegField>
-              <RegField label="Confirm Password *" error={errors.confirmPassword}>
-                <div className={`field-wrap compact ${errors.confirmPassword ? "field-err" : ""}`}>
-                  <input type={showCPwd ? "text" : "password"} className="field-input"
-                    placeholder="Repeat password" value={form.confirmPassword} onChange={handleChange("confirmPassword")}/>
-                  <button type="button" className="eye-btn" onClick={() => setShowCPwd(v => !v)}>
-                    {showCPwd ? <EyeOff/> : <EyeOn/>}
-                  </button>
-                </div>
-                {form.confirmPassword && !errors.confirmPassword && form.password === form.confirmPassword && (
-                  <p className="match-ok">✓ Passwords match</p>
-                )}
-              </RegField>
+              </form>
             </div>
-            <p className="pwd-hint">Must be 8–16 characters and include uppercase, lowercase, number &amp; special character</p>
-
-            {/* Contact */}
-            <SectionLabel icon="📱" text="Contact Information" />
-            <div className="reg-row two-col">
-              <RegField label="Primary Phone *" error={errors.primaryPhone}>
-                <div className={`field-wrap compact phone-wrap ${errors.primaryPhone ? "field-err" : ""}`}>
-                  <select className="country-select" value={form.primaryCountryCode} onChange={handleChange("primaryCountryCode")}>
-                    {COUNTRY_CODES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
-                  </select>
-                  <div className="phone-divider"/>
-                  <input className="field-input" placeholder="Phone number"
-                    value={form.primaryPhone} onChange={handleChange("primaryPhone")} maxLength={15}/>
-                </div>
-              </RegField>
-              <RegField label="Alternate Phone (Optional)" error={errors.altPhone}>
-                <div className={`field-wrap compact phone-wrap ${errors.altPhone ? "field-err" : ""}`}>
-                  <select className="country-select" value={form.altCountryCode} onChange={handleChange("altCountryCode")}>
-                    {COUNTRY_CODES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
-                  </select>
-                  <div className="phone-divider"/>
-                  <input className="field-input" placeholder="Optional"
-                    value={form.altPhone} onChange={handleChange("altPhone")} maxLength={15}/>
-                </div>
-              </RegField>
-            </div>
-
-            {/* Address */}
-            <SectionLabel icon="📍" text="Address Details" />
-            <RegField label="Permanent Address *" error={errors.permanentAddress}>
-              <textarea className={`finput textarea-field ${errors.permanentAddress ? "finput--err" : ""}`}
-                placeholder="House No., Street, City, State, PIN Code"
-                rows={2} value={form.permanentAddress} onChange={handleChange("permanentAddress")}/>
-            </RegField>
-
-            <label className="same-addr-label">
-              <input type="checkbox" checked={sameAddress} onChange={handleSameAddress}/>
-              <span>Residential address same as permanent address</span>
-            </label>
-
-            <RegField label="Residential Address *" error={errors.residentialAddress}>
-              <textarea className={`finput textarea-field ${errors.residentialAddress ? "finput--err" : ""} ${sameAddress ? "finput--disabled" : ""}`}
-                placeholder="House No., Street, City, State, PIN Code"
-                rows={2} value={form.residentialAddress} onChange={handleChange("residentialAddress")}
-                disabled={sameAddress}/>
-            </RegField>
-
-            {/* Actions */}
-            <div className="reg-actions">
-              <button type="button" className="cancel-btn" onClick={closeRegister}>Cancel</button>
-              <button type="submit" className="login-btn" disabled={regLoading} style={{ minWidth: 160 }}>
-                {regLoading ? <span className="spinner"/> : "Create Account"}
-              </button>
-            </div>
-          </form>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
