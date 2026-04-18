@@ -34,5 +34,8 @@ export const clearSession = () => {
   localStorage.removeItem("dms_user");
 };
 
-export const registerUser = (payload) =>
-  axios.post("/api/users/create", payload).then(r => r.data);
+
+export const registerUser = async (payload) => {
+  const response = await api.post("/api/users/create", payload);
+  return response.data; 
+};

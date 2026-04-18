@@ -145,9 +145,7 @@ export default function Login() {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setRegLoading(true);
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL || "https://dms-backend-n9uw.onrender.com"}/api/users/create`,
-        {
+      const payload = {
           username:       form.email,
           password:       form.password,
           role:           "ADMIN",
@@ -160,7 +158,7 @@ export default function Login() {
           permAddress:    form.permanentAddress,
           resiAddress:    form.residentialAddress,
         }
-      );
+        const data = await registerUser(payload);
       setRegSuccess(true);
       setForm(EMPTY_FORM);
       setErrors({});
