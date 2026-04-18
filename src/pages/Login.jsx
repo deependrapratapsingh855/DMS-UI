@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, saveSession } from "../services/authService";
+import { loginUser, saveSession, registerUser } from "../services/authService";
 import axios from "axios";
 import "./Login.css";
 

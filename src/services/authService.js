@@ -16,7 +16,7 @@ export const loginUser = async (email, password) => {
   "username": email,
   "password": password
 });
-  return response.data; // e.g. { success: true, user: { name, email } }
+  return response.data;
 };
 
 /** Mark user as logged in (simple flag + optional user data) */
