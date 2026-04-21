@@ -128,7 +128,7 @@ export default function Home() {
               <span className="notif-dot" />
             </button>
             <div className="topbar-avatar" onClick={handleLogout} title="Logout">
-              {(user?.name || "A")[0].toUpperCase()}
+              {(user?.name || "Logout")}
             </div>
           </div>
         </header>

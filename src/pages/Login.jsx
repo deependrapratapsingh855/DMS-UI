@@ -266,10 +266,10 @@ export default function Login() {
               </button>
             </form>
 
-            <p className="register-row">
+            {/* <p className="register-row">
               New to DMS?{" "}
               <button className="register-link-btn" onClick={goToRegister}>Get Started</button>
-            </p>
+            </p> */}
           </div>
         </div>
       )}
